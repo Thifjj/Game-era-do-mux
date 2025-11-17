@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "947496185011",
+    "project_id": "era-do-mux",
+    "storage_bucket": "era-do-mux.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947496185011:android:50dd06cc9afe2e378f94c6",
+        "android_client_info": {
+          "package_name": "com.example.eradomux"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIXXmwq2SOJ32KvznR47KPj094x2xlzfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
