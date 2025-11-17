@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState // <--- IMPORTANTE
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll // <--- IMPORTANTE
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eradomux.R
-// Certifique-se de importar suas cores
 import com.example.eradomux.ui.*
 
 
@@ -29,7 +30,7 @@ import com.example.eradomux.ui.*
 fun TelaMenu(
     nomeJogador: String,
     tipoJogador: String,
-    avatarId: Int, // <--- Recebe o ID do avatar do banco
+    avatarId: Int,
     onNavegar: (String) -> Unit,
     onSairClick: () -> Unit
 ) {
@@ -39,7 +40,11 @@ fun TelaMenu(
         R.drawable.imgperfil3,
         R.drawable.imgperfil4
     )
-    val imagemAvatarExibicao = listaAvatares.getOrElse(avatarId) { R.drawable.imgperfil } // Fallback para o primeiro
+    val imagemAvatarExibicao = listaAvatares.getOrElse(avatarId) { R.drawable.imgperfil }
+
+    // Estado para controlar a rolagem dos botões
+    val scrollState = rememberScrollState()
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         // 1. IMAGEM DE FUNDO
@@ -70,6 +75,7 @@ fun TelaMenu(
                         .fillMaxSize()
                         .padding(vertical = 16.dp, horizontal = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    // SpaceBetween empurra o Logo pro topo e o Sair pro fundo
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -79,23 +85,28 @@ fun TelaMenu(
                         contentDescription = "Logo",
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .aspectRatio(1f)
+                            .aspectRatio(1.5f)
                     )
 
-                    // -- LISTA DE BOTÕES --
+                    // -- LISTA DE BOTÕES (AGORA COM SCROLL) --
                     Column(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f) // Ocupa todo o espaço disponível no meio
+                            .padding(vertical = 12.dp) // Espaço para não colar no logo/botão sair
+                            .verticalScroll(scrollState) // <--- PERMITE ROLAR COM O DEDO
                     ) {
                         BotaoMenuPrincipal("Jogar") { onNavegar("Jogar") }
                         BotaoMenuPrincipal("Tutorial") { onNavegar("Tutorial") }
                         BotaoMenuPrincipal("Estatísticas") { onNavegar("Estatísticas") }
                         BotaoMenuPrincipal("Perfil") { onNavegar("Perfil") }
                         BotaoMenuPrincipal("Sobre") { onNavegar("Sobre") }
+                        // Se você adicionar mais botões aqui, a lista vai rolar automaticamente
                     }
 
-                    // -- BOTÃO SAIR --
+                    // -- BOTÃO SAIR (FIXO NO FUNDO) --
                     BotaoMenuPrincipal("Sair", isExit = true) { onSairClick() }
                 }
             }
@@ -105,13 +116,12 @@ fun TelaMenu(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.65f)
-                // REMOVI O PADDING GERAL DAQUI (.padding(16.dp)) PARA O PAPEL ENCOSTAR NA BORDA
             ) {
                 // -- INFO DO JOGADOR (Topo Direito) --
                 Row(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(top = 16.dp, end = 16.dp) // Adicionei padding manual aqui para não colar no teto
+                        .padding(top = 16.dp, end = 16.dp)
                         .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
                         .border(1.dp, CorDourado, RoundedCornerShape(8.dp))
                         .padding(8.dp),
@@ -147,14 +157,13 @@ fun TelaMenu(
                 }
 
                 // ---------------------------------------------------------
-                // -- LOGO PARCEIRO COM FUNDO DE PAPEL (COLADO NO CANTO) --
+                // -- LOGO PARCEIRO --
                 // ---------------------------------------------------------
                 Box(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd), // Alinhado estritamente ao canto inferior direito
+                        .align(Alignment.BottomEnd),
                     contentAlignment = Alignment.Center
                 ) {
-                    // 1. A IMAGEM DO PAPEL
                     Image(
                         painter = painterResource(id = R.drawable.retangulo_papel),
                         contentDescription = null,
@@ -164,7 +173,6 @@ fun TelaMenu(
                             .height(80.dp)
                     )
 
-                    // 2. O LOGO DA UNIVALI
                     Image(
                         painter = painterResource(id = R.drawable.logounivali),
                         contentDescription = "Univali",

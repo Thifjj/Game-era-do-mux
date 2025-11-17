@@ -64,6 +64,25 @@ fun TelaEstatisticas(
         // Camada escura
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.3f)))
 
+        // Logo no Papel (Canto Inferior Direito)
+        Box(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.retangulo_papel),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.width(220.dp).height(80.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.logounivali),
+                contentDescription = "Univali",
+                modifier = Modifier.height(70.dp).width(220.dp),
+                contentScale = ContentScale.Fit
+            )
+        }
+
         // 2. CONTEÚDO PRINCIPAL
         Row(
             modifier = Modifier
@@ -145,25 +164,6 @@ fun TelaEstatisticas(
         // Ir para Conquistas (Topo Direito)
         Box(modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)) {
             BotaoMedieval(text = "Ir para Conquistas", onClick = onConquistasClick)
-        }
-
-        // Logo no Papel (Canto Inferior Direito)
-        Box(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.retangulo_papel),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.width(220.dp).height(80.dp)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.logounivali),
-                contentDescription = "Univali",
-                modifier = Modifier.height(70.dp).width(220.dp),
-                contentScale = ContentScale.Fit
-            )
         }
     }
 }

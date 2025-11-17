@@ -21,6 +21,9 @@ import com.example.eradomux.ui.TelaTutorial
 import com.example.eradomux.ui.TelaSelecaoAvatar
 import com.example.eradomux.ui.TelaSelecaoFases
 import com.example.eradomux.ui.TelaJogo
+import com.example.eradomux.ui.TelaPerfil
+import com.example.eradomux.ui.TelaSobre
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +44,8 @@ class MainActivity : ComponentActivity() {
                     var nomeUsuarioLogado by remember { mutableStateOf("") }
                     var tipoUsuarioLogado by remember { mutableStateOf("") }
                     var avatarUsuarioLogado by remember { mutableStateOf(0) }
-
+                    var senhaUsuarioLogado by remember { mutableStateOf("") } // Precisamos guardar a senha atual
+                    var avatarEdicaoPerfil by remember { mutableStateOf(0) }
                     // Dados de Cadastro
                     var avatarSelecionadoNoCadastro by remember { mutableStateOf(0) }
 
@@ -57,6 +61,7 @@ class MainActivity : ComponentActivity() {
                                             nomeUsuarioLogado = nomeRetornado
                                             tipoUsuarioLogado = tipoRetornado
                                             avatarUsuarioLogado = avatarRetornado
+                                            senhaUsuarioLogado = senha
                                             telaAtual = "menu"
                                         }
                                     }
@@ -98,8 +103,11 @@ class MainActivity : ComponentActivity() {
                                         "Jogar" -> telaAtual = "selecao_fases"
                                         "Tutorial" -> telaAtual = "tutorial"
                                         "Estatísticas" -> telaAtual = "estatisticas"
-                                        "Perfil" -> Toast.makeText(this, "Em breve.", Toast.LENGTH_SHORT).show()
-                                        "Sobre" -> Toast.makeText(this, "Em breve.", Toast.LENGTH_SHORT).show()
+                                        "Perfil" -> {
+                                            avatarEdicaoPerfil = avatarUsuarioLogado
+                                            telaAtual = "perfil"
+                                        }
+                                        "Sobre" -> telaAtual = "sobre"
                                     }
                                 },
                                 onSairClick = {
@@ -162,6 +170,52 @@ class MainActivity : ComponentActivity() {
                                 onVoltarClick = { telaAtual = "menu" }
                             )
                         }
+
+                        // --- TELA DE PERFIL ---
+                        "perfil" -> {
+                            TelaPerfil(
+                                nome = nomeUsuarioLogado,
+                                tipo = tipoUsuarioLogado,
+                                senhaAtual = senhaUsuarioLogado,
+                                avatarId = avatarEdicaoPerfil, // Mostra o que está sendo editado
+                                onVoltarClick = {
+                                    // Se cancelar, volta pro menu e descarta mudanças
+                                    telaAtual = "menu"
+                                },
+                                onTrocarAvatarClick = {
+                                    telaAtual = "selecao_avatar_perfil" // Rota específica para saber voltar pro perfil
+                                },
+                                onSalvarClick = { novaSenha ->
+                                    // Chama a função para gravar no banco
+                                    atualizarPerfil(db, nomeUsuarioLogado, novaSenha, avatarEdicaoPerfil) {
+                                        // Se der certo:
+                                        senhaUsuarioLogado = novaSenha
+                                        avatarUsuarioLogado = avatarEdicaoPerfil
+                                        telaAtual = "menu"
+                                    }
+                                }
+                            )
+                        }
+
+                        "selecao_avatar_perfil" -> {
+                            TelaSelecaoAvatar(
+                                onVoltarClick = { telaAtual = "perfil" },
+                                onAvatarSelecionado = { novoId ->
+                                    avatarEdicaoPerfil = novoId // Atualiza o temporário
+                                    telaAtual = "perfil" // Volta para a tela de perfil
+                                }
+                            )
+                        }
+
+                        "sobre" -> {
+                            TelaSobre(
+                                onVoltarClick = {
+                                    telaAtual = "menu"
+                                }
+                            )
+                        }
+
+
                     }
                 }
             }
@@ -280,6 +334,40 @@ class MainActivity : ComponentActivity() {
                         // Se já tinha passado dessa fase, só volta
                         onSuccess()
                     }
+                }
+            }
+    }
+
+    // --- LÓGICA PARA ATUALIZAR PERFIL ---
+    private fun atualizarPerfil(
+        db: FirebaseFirestore,
+        nomeUsuario: String,
+        novaSenha: String,
+        novoAvatarId: Int,
+        onSuccess: () -> Unit
+    ) {
+        db.collection("usuarios")
+            .whereEqualTo("nome", nomeUsuario)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val docId = documents.documents[0].id
+
+                    // Atualiza os campos
+                    db.collection("usuarios").document(docId)
+                        .update(
+                            mapOf(
+                                "senha" to novaSenha,
+                                "avatarId" to novoAvatarId
+                            )
+                        )
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Perfil atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+                            onSuccess()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Erro ao atualizar.", Toast.LENGTH_SHORT).show()
+                        }
                 }
             }
     }
