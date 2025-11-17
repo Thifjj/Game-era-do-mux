@@ -25,9 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eradomux.R
-import com.example.eradomux.ui.CorDourado
-import com.example.eradomux.ui.CorVermelhoBotao
-import com.example.eradomux.ui.CorVermelhoEscuro
 
 // Modelo simples para representar uma fase
 data class Fase(

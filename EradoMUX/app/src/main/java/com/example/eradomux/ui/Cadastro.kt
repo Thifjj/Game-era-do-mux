@@ -23,9 +23,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eradomux.R
-import com.example.eradomux.ui.BotaoMedieval
-import com.example.eradomux.ui.CampoMedieval
-import com.example.eradomux.ui.*
 
 @Composable
 fun TelaCadastro(

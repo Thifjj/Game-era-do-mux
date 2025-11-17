@@ -16,11 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eradomux.R
-// Importamos as cores e componentes que criamos
-import com.example.eradomux.ui.BotaoMedieval
-import com.example.eradomux.ui.CampoMedieval
-import com.example.eradomux.ui.CorDourado
-import com.example.eradomux.ui.CorFundoTransparente
 
 @Composable
 fun TelaLogin(

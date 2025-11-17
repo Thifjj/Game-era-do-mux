@@ -22,8 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eradomux.R
-import com.example.eradomux.ui.BotaoMedieval
-import com.example.eradomux.ui.*
 
 data class EstatisticaItem(
     val titulo: String,
